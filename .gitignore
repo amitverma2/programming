@@ -1,5 +1,6 @@
 .DS_Store
 *.[oa]
 *~
+a.out
 src/office/
 obj/
