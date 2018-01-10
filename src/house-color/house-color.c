@@ -30,6 +30,18 @@ enum { PINK, ORANGE, YELLOW, MAX_COLORS };
 
 /* here is the cost array for the house */
 int cost[MAX_HOUSES][MAX_COLORS];
+int cost_cache[MAX_HOUSES][MAX_COLORS];
+int cache_hit;
+int find_min_entry;
+
+void reset_cache(void)
+{
+    cache_hit = 0;
+    find_min_entry = 0;
+    for(int i = 0 ; i < MAX_HOUSES; i++)
+        for(int j = 0; j < MAX_COLORS; j++)
+            cost_cache[i][j] = -1;
+}
 
 /* find min cost
  * if i'th house is colored with color c,
@@ -37,8 +49,13 @@ int cost[MAX_HOUSES][MAX_COLORS];
  */
 int find_min_cost(int i, int n, int c)
 {
+    find_min_entry++;
     if(i == n) { /* we are at the last house of the row */
         return cost[i][c];
+    }
+    if(cost_cache[i][c] != -1) {
+        cache_hit++;
+        return cost_cache[i][c];
     }
     int cur_cost = cost[i][c];
     int min_remaining = INT_MAX;
@@ -49,7 +66,8 @@ int find_min_cost(int i, int n, int c)
         if(remaining < min_remaining)
             min_remaining = remaining;
     }
-    return cur_cost + min_remaining;
+    cost_cache[i][c] = cur_cost + min_remaining;
+    return cost_cache[i][c];
 }
 
 void read_input(int *n)
@@ -76,12 +94,14 @@ int main(int argc, char * argv[])
         int n = 0;
         read_input(&n);
         if(n > 0) {
+            reset_cache();
             int min = find_min_cost(0, n-1, 0);
             for(int c = 1; c < MAX_COLORS; c++) {
                 int cost = find_min_cost(0, n-1, c);
                 if(cost < min)
                     min = cost;
             }
+            // printf("%d (%d / %d)\n", min, find_min_entry, cache_hit);
             printf("%d\n", min);
         }
     }
