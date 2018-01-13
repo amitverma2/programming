@@ -1,0 +1,10 @@
+Jan 10 - created repo
+Jan 11 - house coloring problem solved with recursion
+    read how to solve it using DP
+    read DP fundamentals
+Jan 12 - attempted carlos inversion sorting problem. couldn't solve.
+    but as part of that, learned DFS in graphs, and made DFS code
+    using adjacency matrix in C. (still in carlos.c file)
+Jan 14 - Revisited C++ stl. Understood multimap.
+    Implemented DFS using C++/stl multimap.
+
