@@ -14,6 +14,8 @@
  * xM yM    edge M
  * O        dfs Origin vertex
  *
+ * NOTE: In this the vertex numbering starts from 1
+ *
  * Few URLs for refernece
  * https://www.geeksforgeeks.org/graph-implementation-using-stl-for-competitive-programming-set-1-dfs-of-unweighted-and-undirected/
  *
