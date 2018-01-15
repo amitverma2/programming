@@ -1,6 +1,7 @@
 .DS_Store
 *.[oa]
 *~
+*.swp
 *.pdf
 a.out
 src/office/
