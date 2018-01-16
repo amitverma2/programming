@@ -1,6 +1,8 @@
 /*
  * Kris Elly Game Candy game
  *
+ * http://www.programering.com/a/MTNzYTNwATE.html
+ *
  * Elly and Kris play the following game. In the beginning there are several
  * boxes aligned in a row. The boxes may or may not contain candy. As a matter
  * of fact, the girls know exactly how many candies each of them contains.
