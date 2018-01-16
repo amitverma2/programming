@@ -16,4 +16,6 @@ https://www.geeksforgeeks.org/kruskals-minimum-spanning-tree-using-stl-in-c/
 https://www.geeksforgeeks.org/prims-algorithm-using-priority_queue-stl/
 https://www.geeksforgeeks.org/tag/bfs/
 https://www.codechef.com/APRIL15/problems/CARLOS
-
+https://www.topcoder.com/community/data-science/data-science-tutorials/algorithm-games/
+https://apps.topcoder.com/forums/;jsessionid=8DED4F668C8755EDCE995A7EDB3863C5?module=Thread&threadID=670804&start=0&mc=6
+https://github.com/dush1729/Topcoder/blob/master/500%20Problem
