@@ -122,18 +122,17 @@ std::string Game::prefix(int n)
 Game::Player Game::play(Player player, std::vector<int> &sweets, int kris, int elly)
 {
   static int nest = 0;
-  int sum;
-  sum = std::accumulate(sweets.begin(), sweets.end(), 0);
-
-
   nest++;
 
   if(verbose) {
     std::cout << prefix(nest) << ((player == Elly)?"Elly's":"Kris's") << " turn. Elly at " << elly << " Kris at " << kris << " sweets @ [ ";
     for(std::vector<int>::const_iterator i = sweets.begin(); i != sweets.end(); i++)
       std::cout << *i << ' ';
-    std::cout << " ]" << std::endl;
+    std::cout << "]" << std::endl;
   }
+
+  int sum;
+  sum = std::accumulate(sweets.begin(), sweets.end(), 0);
 
   if(sum == 0) {
     if(elly > kris) {
@@ -180,7 +179,6 @@ Game::Player Game::play(Player player, std::vector<int> &sweets, int kris, int e
       Player p = play((player == Elly)?Kris:Elly, sweets, kris_2, elly_2);
 
       if(p == player) {
-
         if(verbose) std::cout << prefix(nest) << "Winner is " << ((player == Elly)?"Elly":"Kris") << std::endl;
         nest--;
         return p;
@@ -205,7 +203,7 @@ Game::Player Game::play(Player player, std::vector<int> &sweets, int kris, int e
 std::string Game::getWinner(std::vector<int> &sweets)
 {
     if(verbose)
-        std::cout << "Playing game with " << N << " boxes" << std::endl;
+        std::cout << " **** Playing game with " << N << " boxes ****" << std::endl;
 
     Player winner = play(Elly, sweets, 0, 0);
 
