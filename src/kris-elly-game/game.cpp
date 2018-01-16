@@ -89,25 +89,117 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <numeric>
 
 bool verbose = false;
 
 class Game {
     int N;
-    int elly;
-    int kris;
-    enum Player { Elly, Kris };
+    enum Player { Elly, Kris, Draw };
 
     public:
-    Game(int _N):N(_N), elly(0), kris(0) { }
+    Game(int _N):N(_N) { }
     std::string getWinner(std::vector<int> &sweets);
+
     private:
-    std::pair<int, int> play(int level, Player player);
+    Player play(Player player, std::vector<int> &sweets, int kris, int elly);
+    std::string prefix(int n);
 };
 
-std::pair<int, int> Game::play(int level, Player player)
+std::string Game::prefix(int n)
 {
-    return std::pair<int, int>(0,0);
+  std::string spacer;
+  int N = n;
+
+  while(n-- > 0) {
+    spacer += std::to_string(N);
+  }
+  spacer += " ";
+
+  return spacer;
+}
+
+Game::Player Game::play(Player player, std::vector<int> &sweets, int kris, int elly)
+{
+  static int nest = 0;
+  int sum;
+  sum = std::accumulate(sweets.begin(), sweets.end(), 0);
+
+
+  nest++;
+
+  if(verbose) {
+    std::cout << prefix(nest) << ((player == Elly)?"Elly's":"Kris's") << " turn. Elly at " << elly << " Kris at " << kris << " sweets @ [ ";
+    for(std::vector<int>::const_iterator i = sweets.begin(); i != sweets.end(); i++)
+      std::cout << *i << ' ';
+    std::cout << " ]" << std::endl;
+  }
+
+  if(sum == 0) {
+    if(elly > kris) {
+    if(verbose)
+	    std::cout << prefix(nest) << "Elly is the winner. Elly " << elly << " Kris " << kris << std::endl;
+      nest--;
+      return Elly;
+    } else if(kris > elly) {
+    if(verbose)
+	    std::cout << prefix(nest) << "Kris is the winner. Elly " << elly << " Kris " << kris << std::endl;
+      nest--;
+      return Kris;
+    } else {
+    if(verbose)
+	    std::cout << prefix(nest) << "We have a draw. Elly " << elly << " Kris " << kris << std::endl;
+      nest--;
+      return Draw;
+    }
+  }
+  
+  bool draw_possible = false;
+  std::vector<int> dup = sweets;
+  for(std::vector<int>::iterator i = sweets.begin(); i != sweets.end(); i++) {
+    if(*i != 0) {
+      int elly_2 = elly;
+      int kris_2 = kris;
+
+      if(player == Elly) {
+        elly_2 += *i;
+        if(verbose)
+          std::cout << prefix(nest) << "Elly took " << *i << " sweets." << std::endl;
+      }
+      else if(player == Kris) {
+        kris_2 += *i;
+        if(verbose)
+          std::cout << prefix(nest) << "Kris took " << *i << " sweets." << std::endl;
+      }
+
+
+      *i = 0;
+      if(i != sweets.begin()) *(i-1) *= 2;
+      if(i != sweets.end()) *(i+1) *= 2;
+
+      Player p = play((player == Elly)?Kris:Elly, sweets, kris_2, elly_2);
+
+      if(p == player) {
+
+        if(verbose) std::cout << prefix(nest) << "Winner is " << ((player == Elly)?"Elly":"Kris") << std::endl;
+        nest--;
+        return p;
+      }
+      else if(p == Draw) draw_possible = true;
+
+      sweets = dup;
+    }
+  }
+
+  if(draw_possible) {
+    if(verbose) std::cout << prefix(nest) << "Draw possible." << std::endl;
+    nest--;
+    return Draw;
+  }
+
+  if(verbose) std::cout << prefix(nest) << "Returning winner as other player. " << ((player == Elly)?"Kris":"Elly") << std::endl;
+  nest--;
+  return (player == Elly)?Kris:Elly;
 }
 
 std::string Game::getWinner(std::vector<int> &sweets)
@@ -115,15 +207,11 @@ std::string Game::getWinner(std::vector<int> &sweets)
     if(verbose)
         std::cout << "Playing game with " << N << " boxes" << std::endl;
 
+    Player winner = play(Elly, sweets, 0, 0);
 
-    std::pair<int, int> best = play(1, Elly);
-
-    if(best.first > best.second)
-        return "Elly";
-    else if(best.first < best.second)
-        return "Kris";
-    else
-        return "Draw";
+    if(winner == Elly) return "Elly";
+    else if(winner == Kris) return "Kris";
+    else return "Draw";
 }
 
 int main(int argc, char *argv[])
