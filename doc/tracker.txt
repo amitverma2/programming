@@ -8,3 +8,5 @@ Jan 12 - attempted carlos inversion sorting problem. couldn't solve.
 Jan 14 - Revisited C++ stl. Understood multimap.
     Implemented DFS using C++/stl multimap/vector.
 Jan 15 - Implemented BFS using C++ stl/multimap/queue/vector.
+Jan 16 - Tried kris elly game, failed.
+Jan 17 - Tried kris elly game, passed.
