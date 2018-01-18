@@ -53,7 +53,8 @@
  * If Elly takes the 20, then Kris can take the 30, leaving Elly the choice
  * between 100 and 70. Elly should take the 100, but then Kris will take 140
  * and win.
- * If Elly takes the 30, then Kris can take the 20, leaving Elly the same choice.
+ * If Elly takes the 30, then Kris can take the 20, leaving Elly the same
+ * choice.
  * If Elly takes the 50, then Kris can take the 140, leaving Elly the choice
  * between a 40 and a 30.
  * If Elly takes the 70, then Kris can take the 100, leaving Elly the same
@@ -121,14 +122,19 @@ std::string Game::prefix(int n)
   return spacer;
 }
 
-Game::Player Game::play(Player player, std::vector<int> &sweets, int kris, int elly)
+Game::Player Game::play(Player player, std::vector<int> &sweets, int kris,
+                        int elly)
 {
   static int nest = 0;
   nest++;
 
   if(verbose) {
-    std::cout << prefix(nest) << ((player == Elly)?"Elly's":"Kris's") << " turn. Elly at " << elly << " Kris at " << kris << " sweets @ [ ";
-    for(std::vector<int>::const_iterator i = sweets.begin(); i != sweets.end(); i++)
+    std::cout << prefix(nest) << ((player == Elly)?"Elly's":"Kris's") <<
+      " turn. Elly at " << elly << " Kris at " << kris << " sweets @ [ ";
+
+    for(std::vector<int>::const_iterator i = sweets.begin();
+        i != sweets.end();
+        i++)
       std::cout << *i << ' ';
     std::cout << "]" << std::endl;
   }
@@ -139,17 +145,20 @@ Game::Player Game::play(Player player, std::vector<int> &sweets, int kris, int e
   if(sum == 0) {
     if(elly > kris) {
     if(verbose)
-	    std::cout << prefix(nest) << "Elly is the winner. Elly " << elly << " Kris " << kris << std::endl;
+        std::cout << prefix(nest) << "Elly is the winner. Elly " << elly
+            << " Kris " << kris << std::endl;
       nest--;
       return Elly;
     } else if(kris > elly) {
     if(verbose)
-	    std::cout << prefix(nest) << "Kris is the winner. Elly " << elly << " Kris " << kris << std::endl;
+        std::cout << prefix(nest) << "Kris is the winner. Elly " << elly
+            << " Kris " << kris << std::endl;
       nest--;
       return Kris;
     } else {
     if(verbose)
-	    std::cout << prefix(nest) << "We have a draw. Elly " << elly << " Kris " << kris << std::endl;
+        std::cout << prefix(nest) << "We have a draw. Elly " << elly
+            << " Kris " << kris << std::endl;
       nest--;
       return Draw;
     }
@@ -165,12 +174,14 @@ Game::Player Game::play(Player player, std::vector<int> &sweets, int kris, int e
       if(player == Elly) {
         elly_2 += *i;
         if(verbose)
-          std::cout << prefix(nest) << "Elly took " << *i << " sweets." << std::endl;
+          std::cout << prefix(nest) << "Elly took " << *i << " sweets."
+             << std::endl;
       }
       else if(player == Kris) {
         kris_2 += *i;
         if(verbose)
-          std::cout << prefix(nest) << "Kris took " << *i << " sweets." << std::endl;
+          std::cout << prefix(nest) << "Kris took " << *i << " sweets."
+             << std::endl;
       }
 
 
@@ -181,7 +192,9 @@ Game::Player Game::play(Player player, std::vector<int> &sweets, int kris, int e
       Player p = play((player == Elly)?Kris:Elly, sweets, kris_2, elly_2);
 
       if(p == player) {
-        if(verbose) std::cout << prefix(nest) << "Winner is " << ((player == Elly)?"Elly":"Kris") << std::endl;
+        if(verbose)
+            std::cout << prefix(nest) << "Winner is "
+                << ((player == Elly)?"Elly":"Kris") << std::endl;
         nest--;
         return p;
       }
@@ -197,7 +210,9 @@ Game::Player Game::play(Player player, std::vector<int> &sweets, int kris, int e
     return Draw;
   }
 
-  if(verbose) std::cout << prefix(nest) << "Returning winner as other player. " << ((player == Elly)?"Kris":"Elly") << std::endl;
+  if(verbose)
+    std::cout << prefix(nest) << "Returning winner as other player. "
+         << ((player == Elly)?"Kris":"Elly") << std::endl;
   nest--;
   return (player == Elly)?Kris:Elly;
 }
@@ -205,7 +220,8 @@ Game::Player Game::play(Player player, std::vector<int> &sweets, int kris, int e
 std::string Game::getWinner(std::vector<int> &sweets)
 {
     if(verbose)
-        std::cout << " **** Playing game with " << N << " boxes ****" << std::endl;
+        std::cout << " **** Playing game with " << N << " boxes ****"
+            << std::endl;
 
     Player winner = play(Elly, sweets, 0, 0);
 
@@ -233,7 +249,8 @@ int main(int argc, char *argv[])
 
         if(verbose) {
             std::cout << "Test case " << i << " Boxes are : " << std::endl;
-            for(std::vector<int>::iterator i = sweets.begin(); i != sweets.end();
+            for(std::vector<int>::iterator i = sweets.begin();
+                i != sweets.end();
                 i++)
                 std::cout << *i << ' ';
             std::cout << std::endl;
