@@ -114,6 +114,10 @@ class CakeParty {
     bool isWinning(int pieces[]);
     int lexorder(int a, int b, int posA, int posB);
     std::vector<int> lexorder(int from, int to);
+    void findMaxes(int pieces[], int n, int& m, int& p, int& nm,
+                   int& m2, int& p2, int& nm2);
+    int lexsmaller(int a, int b);
+    int lexsmallest(int low, int hi);
     struct lexcompareClass {
         public:
         bool operator()(int a, int b) {
@@ -129,7 +133,7 @@ class CakeParty {
     } lexcompare;
 
   public:
-    std::string makeMove(int pieces[]);
+    std::string makeMove(int pieces[], int n);
 };
 
 std::vector<int> CakeParty::lexorder(int from, int to)
@@ -177,9 +181,29 @@ int CakeParty::lexorder(int a, int b, int posA, int posB)
 #endif
 }
 
-#define BRUTE_FORCE
+int CakeParty::lexsmaller(int a, int b)
+{
+    std::stringstream s1, s2;
+    s1 << a;
+    s2 << b;
+    if(s1.str() < s2.str()) return a;
+    if(s1.str() > s2.str()) return b;
+    return a;
+}
+
+int CakeParty::lexsmallest(int low, int hi)
+{
+    int min = low;
+    for(int i = low; i <= hi; i++)
+        min = lexsmaller(min, i);
+    return min;
+}
+
+#undef BRUTE_FORCE
 bool CakeParty::isWinning(int pieces[])
 {
+#ifdef BRUTE_FORCE
+  // brute force
   int i;
   int max = pieces[0];
   int maxI = 0;
@@ -195,8 +219,6 @@ bool CakeParty::isWinning(int pieces[])
   if(max == 0)
     return false;
 
-#ifdef BRUTE_FORCE
-  // brute force
   std::vector<int> lexpieces = lexorder(1, max);
   for(std::vector<int>::iterator j = lexpieces.begin();
       j != lexpieces.end();
@@ -212,19 +234,50 @@ bool CakeParty::isWinning(int pieces[])
     for(int i = 0; i < 50; i++)
       pieces[i] = p[i];
   }
-#else
-  if(x == 0)
-    return false;
-  else {
-    return true;
-  }
-#endif
-
   return false;
+#else
+  return false;
+#endif
 }
 
-std::string CakeParty::makeMove(int pieces[])
+void CakeParty::findMaxes(int pieces[], int n, int& m, int& p, int& nm,
+                          int& m2, int& p2, int& nm2)
 {
+    // find largest, position, and counts
+    m = -1;
+    p = -1;
+    nm = -1;
+    for(int i = 0 ; i < n; i++) {
+        if(pieces[i] > m) {
+            m = pieces[i];
+            p = i;
+            nm = 1;
+        } else if(pieces[i] == m) {
+            nm++;
+            p = lexsmaller(i, p);
+        }
+    }
+    m2 = -1;
+    p2 = -1;
+    nm2 = -1;
+    for(int i = 0 ; i < n; i++) {
+        if(pieces[i] != m) {
+            if(pieces[i] > m2) {
+                m2 = pieces[i];
+                p2 = i;
+                nm2 = 1;
+            } else if(pieces[i] == m2) {
+                nm2++;
+                p2 = lexsmaller(i, p2);
+            }
+        }
+    }
+}
+
+std::string CakeParty::makeMove(int pieces[], int n)
+{
+#ifdef BRUTE_FORCE
+    //brute force
   int i;
   int max = pieces[0];
   int maxI = 0;
@@ -264,6 +317,40 @@ std::string CakeParty::makeMove(int pieces[])
   move += " PIECES ";
   move += std::to_string(1);
   return move;
+#else
+  int max;
+  int posMax;
+  int numMax;
+  int max2;
+  int posMax2;
+  int numMax2;
+
+  findMaxes(pieces, n, max, posMax, numMax, max2, posMax2, numMax2);
+
+  if(verbose) {
+      std::cout << "m " << max << " pm " << posMax << " nm " << numMax
+          << " m2 " << max2 << " pm2 " << posMax2 << " nm2 " << numMax2
+          << std::endl;
+  }
+
+  if(n == 1) {
+      return std::string("CAKE 0 PIECES ") + std::to_string(max);
+  } else if(numMax % 2 == 0) {
+      return std::string("L:CAKE ") + std::to_string(posMax) + " PIECES 1";
+  } else if(numMax != 1) {
+      return std::string("CAKE ") + std::to_string(posMax) + " PIECES 1";
+  } else {
+      // numMax == 1 here
+      if(numMax2 % 2 != 0) {
+          return std::string("CAKE ") + std::to_string(posMax) + " PIECES "
+              + std::to_string(max-max2);
+      } else {
+          return std::string("CAKE ") + std::to_string(posMax) + " PIECES "
+              + std::to_string(lexsmallest(max-max2+1, max));
+      }
+  }
+  return "!!!No move";
+#endif
 }
 
 int main(int argc, char *argv[])
@@ -289,7 +376,64 @@ int main(int argc, char *argv[])
     }
 
     class CakeParty cakeparty;
-    std::cout << cakeparty.makeMove(pieces) << std::endl;
+    std::cout << cakeparty.makeMove(pieces, N) << std::endl;
   }
   return 0;
 }
+
+
+/*
+ * SOLUTION:
+ *
+ * https://community.topcoder.com/tc?module=Static&d1=match_editorials&d2=srm338
+ *
+ * This problem contained two separate parts. One was plainly in sight, the
+ * other slightly hidden. 
+ *
+ * The obvious part is solving the game. 
+ *
+ * Playing around with small cases, analyzing the examples, or even writing a
+ * brute force solution to compute some winning positions -- these are some
+ * of the ways you could discover the optimal strategy. 
+ *
+ * Once you get the right idea, the game is unbelievably simple: Let P be a
+ * position, M the maximal number of pieces of one cake, and let C be the
+ * number of cakes that have exactly M pieces left. The position P is winning
+ * if and only if C is odd. 
+ *
+ * To prove this, we need to show two things:
+ *
+ * From any losing position, all moves lead to a winning position.
+ * This is clearly true. The player will eat from exactly one of the maximal
+ * cakes, thus their count changes from even to odd.
+ * From any winning position, there is a move that leads to a losing position.
+ * If we have 3 or more maximal cakes, this is similar to the previous case.
+ * The interesting situation is when there is exactly one maximal cake. If
+ * this happens, we count the second largest cakes. If their count is odd,
+ * reduce the maximal cake to this count of pieces. If their count is even,
+ * reduce the maximal cake to a smaller count. (Note that there may be many
+ * valid moves here.)
+ * Now, after feeling that we solved the problem, we stumble upon the hidden
+ * second part: selecting the lexicographically smallest move. 
+ *
+ * Clearly, we may select the cake and the number of pieces independently:
+ * The cake is always the lexicograpically smallest of the maximal cakes.
+ * For a losing position the number of pieces is 1.
+ * For a winning positition with more than one maximal cake the number of
+ * pieces is 1, again.
+ * For a winning position with one maximal cake and an odd count of second
+ * largest cakes, there is a unique correct number of pieces.
+ * Finally, for a winning position with one maximal cake and an even count of
+ * second largest cakes, the winning moves correspond to some interval [A,B].
+ * Thus all we need is a helper function that will find the lexicograpically
+ * smallest integer in [A,B]. This one will do, for example:
+ *   int digits(int x) { return (""+x).length(); }
+ *
+ * String lexSmallest(int min, int max) {
+ *  if (digits(min)==digits(max)) return ""+min;
+ *  String cand1 = ""+min;
+ *  String cand2 = "1"; for (int i=0; i<digits(min); i++) cand2 += "0";
+ *  if (cand1.compareTo(cand2) < 0) return cand1;
+ *  return cand2;
+ * }
+ */
