@@ -56,13 +56,12 @@ bool debug = false;
 
 bool getInput(char * inputRank, char *inputSuite)
 {
+    char temp[3];
     for(int i = 0; i < 13; i++) {
-        if(scanf("%c%c", &inputRank[i], &inputSuite[i]) == EOF)
+        if(scanf("%s",temp) != 1)
             return false;
-        if(i != 12)
-            scanf(" ");
-        else
-            scanf("\n");
+        inputRank[i] = temp[0];
+        inputSuite[i] = temp[1];
     }
     return true;
 }
@@ -112,7 +111,7 @@ int evaluate(int hand[4][13], int cards[4], int &eval2, bool &allSuitesStopped)
     eval2 = 0;
 
     /* eval1 ignores rule 5, 6, & 7 */
-    bool stopped[4];
+    bool stopped[4] = { false, false, false, false };
 
     for(int suite = 0; suite < 4; suite++) {
         /* rule 1 */
@@ -134,8 +133,8 @@ int evaluate(int hand[4][13], int cards[4], int &eval2, bool &allSuitesStopped)
         if(cards[suite] == 0) eval2 += 2;
         /* rule stopped */
         if(hand[suite][0]) stopped[suite] = true;
-        else if(hand[suite][12] && cards[suite] > 2) stopped[suite] = true;
-        else if(hand[suite][11] && cards[suite] > 3) stopped[suite] = true;
+        else if(hand[suite][12] && cards[suite] >= 2) stopped[suite] = true;
+        else if(hand[suite][11] && cards[suite] >= 3) stopped[suite] = true;
     }
     allSuitesStopped = true;
     for(int suite = 0 ; suite < 4; suite++) {
