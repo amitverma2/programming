@@ -111,6 +111,7 @@ int evaluate(int hand[4][13], int cards[4], int &eval2, bool &allSuitesStopped)
     int eval1 = 0;
     eval2 = 0;
 
+    /* eval1 ignores rule 5, 6, & 7 */
     bool stopped[4];
 
     for(int suite = 0; suite < 4; suite++) {
@@ -119,6 +120,18 @@ int evaluate(int hand[4][13], int cards[4], int &eval2, bool &allSuitesStopped)
         if(hand[suite][12]) { eval1 += 3; eval2 += 3; }
         if(hand[suite][11]) { eval1 += 2; eval2 += 2; }
         if(hand[suite][10]) { eval1 += 1; eval2 += 1; }
+        /* rule 2 */
+        if(hand[suite][12] && cards[suite] <= 1) { eval1--; eval2--; }
+        /* rule 3 */
+        if(hand[suite][11] && cards[suite] <= 2) { eval1--; eval2--; }
+        /* rule 4 */
+        if(hand[suite][10] && cards[suite] <= 3) { eval1--; eval2--; }
+        /* rule 5 */
+        if(cards[suite] == 2) eval2 += 1;
+        /* rule 6 */
+        if(cards[suite] == 1) eval2 += 2;
+        /* rule 7 */
+        if(cards[suite] == 0) eval2 += 2;
         /* rule stopped */
         if(hand[suite][0]) stopped[suite] = true;
         else if(hand[suite][12] && cards[suite] > 2) stopped[suite] = true;
@@ -128,11 +141,27 @@ int evaluate(int hand[4][13], int cards[4], int &eval2, bool &allSuitesStopped)
     for(int suite = 0 ; suite < 4; suite++) {
         if(stopped[suite] == false) allSuitesStopped = false;
     }
+
     return eval1;
 }
 
-std::string getBidSuite(int hand[4][13])
+std::string getBidSuite(int hand[4][13], int cards[4])
 {
+    int maxSuite = -1; int maxCards = -1;
+
+    for(int suite = 0; suite < 4; suite++) {
+        if(cards[suite] > maxCards) {
+            maxSuite = suite; maxCards = cards[suite];
+        }
+    }
+
+    switch(maxSuite) {
+        case 0: return "S";
+        case 1: return "H";
+        case 2: return "D";
+        case 3: return "C";
+    }
+
     return "";
 }
 
@@ -155,11 +184,15 @@ int main(int argc, char *argv[])
         convert(hand, cards, inputSuite, inputRank);
         eval1 = evaluate(hand, cards, eval2, allSuitesStopped);
 
+        if(debug) {
+            std::cout << "eval 1 = " << eval1 << " eval2 = " << eval2
+                << " all suites stopped = " << allSuitesStopped << std::endl;
+        }
         if(eval1 >= 16 && allSuitesStopped)
            std::cout << "BID NO-TRUMP" << std::endl;
         else if(eval2 >= 14)
-           std::cout << "BID " << getBidSuite(hand) << std::endl;
-        else std::cout << "BID PASS" << std::endl;
+           std::cout << "BID " << getBidSuite(hand, cards) << std::endl;
+        else std::cout << "PASS" << std::endl;
     }
     return 0;
 }
