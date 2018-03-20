@@ -1,3 +1,13 @@
+vector
+    only has push_back (for optimization reasons), grows the vector as we go.
+    size() works
+    no reverse function, use std::reverse() from <algorithm>
+    std::for_each() from algorithm tobe used for printing if needed.
+    front() works to look at the first element
+    at() works similar to [] but with additional bounds checking and thorwing
+        exception if out of bounds
+    .insert() works as usual
+    iterators can be used as pointers (+ n for moving n ahead)
 string
     // initialization by character with number of occurence
     string str3(5, '#');
