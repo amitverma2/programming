@@ -91,7 +91,9 @@ int main(int argc, char *argv[])
             }
             if(curMax > max) max = curMax;
             if(!broken)
-                i++;
+                i++;    // we can make more efficient by stopping if the last traversal was not broken
+                        // because, if last traversal from j - N was not broken, it has suppose a max
+                        // of say 10, then all the further traversal would be having lesser max
             else 
                 i = brokenAt + 1;
         }
