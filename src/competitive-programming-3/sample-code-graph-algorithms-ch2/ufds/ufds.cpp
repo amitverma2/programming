@@ -66,6 +66,8 @@ int main(int argc, char *argv[])
     std::cout << "0, & 3 are " << (ufds.isSameSet(0, 3)?"same":"disjoint") << " sets." << std::endl;
     std::cout << "Joining 0 & 3." << std::endl;
     ufds.unionSet(0, 3);
+    ufds.unionSet(1, 7);
+    ufds.unionSet(7, 8);
     std::cout << "Now 0, & 3 are " << (ufds.isSameSet(0, 3)?"same":"disjoint") << " sets." << std::endl;
     std::cout << "Number of disjoint sets " << ufds.numDisjointSets() << std::endl;
     std::cout << "Size of set containing 3 is " << ufds.sizeOfSet(3) << std::endl;
