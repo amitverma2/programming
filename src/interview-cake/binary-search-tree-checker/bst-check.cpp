@@ -118,5 +118,11 @@ int main(int argc, char *argv[])
     else
         std::cout << "Is a valid BST, min = " << min << " max = " << max << std::endl;
 
+    n30.left = &n60; // this makes an invalid bst at n30
+    if(!isBST(&n50, &min, &max))
+        std::cout << "Not a valid BST" << std::endl;
+    else
+        std::cout << "Is a valid BST, min = " << min << " max = " << max << std::endl;
+
     return 0;
 }
