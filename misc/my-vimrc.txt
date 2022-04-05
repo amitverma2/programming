@@ -1,3 +1,7 @@
+" set backup and swap files to /tmp, this works well on ubuntu or linux os
+set backupdir=/tmp//
+set directory=/tmp//
+set undodir=/tmp//
 " set indentation based on filetype on
 filetype on
 filetype indent on
