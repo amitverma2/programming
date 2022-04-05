@@ -1,128 +1,45 @@
-"set list
-set t_Co=256
+" set indentation based on filetype on
+filetype on
+filetype indent on
+" mark 80 col limit in red
+set colorcolumn=80
+" enable syntax highlights
 syntax on
-"colorscheme summerfruit256
-"colorscheme railscasts
-"colorscheme koehler 
-"colorscheme solarized 
-"colorscheme pablo
-colorscheme desert 
-set incsearch
-
-set hlsearch
-set nowrapscan
-set nowrap
-set scrolloff=5               " keep at least 5 lines above/below
-set sidescrolloff=5           " keep at least 5 lines left/right
-set number
-set numberwidth=5
+" search options
 set ignorecase
 set infercase
 set smartcase
-"set background=dark
-set background=light
-set winheight=20
-set wmh=5                     " just display the filename & other info
-                              " for each split
-"set background=light
-nnoremap <SPACE> :
-"set autochdir
-"set cursorcolumn
-"set cursorline
-set ruler
+set incsearch
+set hlsearch
+set nowrapscan
+" scrolling behaviour with h/j/k/l
+set scrolloff=3               " keep at least x lines above/below
+set sidescrolloff=3           " keep at least x lines left/right
+" easy window navigation
 map <C-j> <C-W>j<C-W>_
 map <C-k> <C-W>k<C-W>_
 map <C-h> <C-W>h<C-W>_
 map <C-l> <C-W>l<C-W>_
-
+" set windows min height in splits
+set wmh=0                     " just display the filename & other info
+" ease to reach ESC mode
+nnoremap <SPACE> :
+" show ruler info in the status bar
+set ruler
 " format code for c
-set tabstop=8
-set softtabstop=4
-set shiftwidth=4
-" Do not set "expandtabs", it will prevent you from properly formatting code.
+set tabstop=4
+set softtabstop=2
+set shiftwidth=2
 set expandtab
-" Enable the following if you are working in u-boot code
-"set tabstop=8
-"set softtabstop=8
-"set shiftwidth=8
-"set noexpandtab
-
-"
 set cinoptions=(0
-
-" Only do this part when compiled with support for autocommands.
-if has("autocmd")
-  if v:version > 600
-    " Enable file type detection.
-    " Use the default filetype settings, so that mail gets 'tw' set to 72,
-    " 'cindent' is on in C files, etc.
-    " Also load indent files, to automatically do language-dependent indenting.
-    filetype plugin indent on
-  endif
-
-  autocmd BufNewFile,BufReadPre,BufEnter,FileReadPre *.c,*.c[cpx]?[px]?,*.h[px]?  set wrap cin ai
-
-  " For all text files set 'textwidth' to 79 characters.
-  autocmd FileType text setlocal textwidth=79
-  autocmd BufNewFile,BufRead *.txt setlocal textwidth=79
-
-  " DDL/ODL/errmsg files should follow c plugins
-  autocmd BufNewFile,BufRead *.dd     setf c
-  autocmd BufNewFile,BufRead *.odl    setf c
-  autocmd BufNewFile,BufRead *.errmsg setf c
-endif " has("autocmd")
-
-
-" Format KNF [kernel normal form] (see 'man style') for FreeBSD based code.
-"  autocmd Bufenter,BufNewFile,BufReadPre,FileReadPre *.c,*.c[cpx]?[px]?,*.h[px]?[px]? set tabstop=8
-"  autocmd Bufenter,BufNewFile,BufReadPre,FileReadPre *.c,*.c[cpx]?[px]?,*.h[px]?[px]? set formatoptions="croql"
-"  autocmd Bufenter,BufNewFile,BufReadPre,FileReadPre *.c,*.c[cpx]?[px]?,*.h[px]?[px]? set cinoptions=':0,>2s,n0,e0,p2s,(2s,t0,=2s'
-"  autocmd Bufenter,BufNewFile,BufReadPre,FileReadPre *.c,*.c[cpx]?[px]?,*.h[px]?[px]? set comments=sr:/*,mb:*,el:*/,://
-
-
-" Make  <ESC>:make  work as expected.
-set makeprg=mk
-
+" show current mode
 set showmode
-
 " Make "show list" more useful.
 set listchars+=tab:^-
 set listchars+=trail:`
-
-" The C code keywords (for, while, return etc) are ugly yellow and dark blue,
-" which look okay on a light background, but unbearable on a dark background.
-" The following changes the C statements to green, and comments to `brown' which
-" looks like more like dull yellow to me
-"hi Statement    term=bold cterm=NONE ctermfg=DarkGreen ctermbg=NONE gui=bold guifg=#ffff60 guibg=NONE
-
-"
-" Vim macro to display output of cvs annotate in another buffer, using F9 key
-" (thanks, kimmidi!)
-"
-func CvsAnnotation()
-  exe "silent! new +read\\ !cvs\\ annotate\\ " . bufname("%")
-  exe 'setfiletype c'
-  exe ':0'
-endfun
-nnoremap <silent> <F9> :call CvsAnnotation()<CR>
-
-" 
-" Vim macro to display output of cvs diff in another buffer, using F7 key
-" (thanks, kimmidi!)
-"
-func CvsDiff()
-  exe "silent! new +read\\ !cvs\\ diff\\ -up\\ " . bufname("%")
-  exe 'setfiletype diff'
-  exe ':0'
-endfun
-nnoremap <silent> <F7> :call CvsDiff()<CR>
-
-"
-" Macro to format text: maps C-f
-" WARNING: do not use this if you use Control-F to move around
-"
-"map <C-s> gqapk$
-"map! <C-s> <ESC>gqapkA
-"map <C-q> bi'<ESC>wwhi'<ESC>
-"map! <C-q> <ESC>bi'<ESC>wwhi'
-
+" ------------------- disabled options ------------------
+" line numbering - *** disabled line numbering options since i'm anyhow using a ruler
+"set number
+"set numberwidth=4
+" show cursor column for alignment - *** disabled as it's too jarring
+"set cursorcolumn
